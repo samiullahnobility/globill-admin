@@ -11,6 +11,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "assets": ["src/favicon.ico"],
             "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.scss"]
           }
