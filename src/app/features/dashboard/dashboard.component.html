@@ -1,0 +1,30 @@
+<section class="page">
+  <h1>Dashboard</h1>
+
+  <div class="metrics">
+    <mat-card>
+      <span>Providers</span>
+      <strong>{{ dashboard?.totalProviders ?? 0 }}</strong>
+    </mat-card>
+
+    <mat-card>
+      <span>Websites</span>
+      <strong>{{ dashboard?.totalWebsites ?? 0 }}</strong>
+    </mat-card>
+
+    <mat-card>
+      <span>Published</span>
+      <strong>{{ dashboard?.publishedWebsites ?? 0 }}</strong>
+    </mat-card>
+
+    <mat-card>
+      <span>New Leads</span>
+      <strong>{{ dashboard?.newAppointmentRequests ?? 0 }}</strong>
+    </mat-card>
+
+    <mat-card>
+      <span>Open Leads</span>
+      <strong>{{ dashboard?.openAppointmentRequests ?? 0 }}</strong>
+    </mat-card>
+  </div>
+</section>

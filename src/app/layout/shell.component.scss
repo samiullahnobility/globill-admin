@@ -1,0 +1,31 @@
+.shell {
+  min-height: 100vh;
+}
+
+mat-sidenav {
+  width: 240px;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px;
+}
+
+.brand {
+  margin: 8px 8px 24px;
+  color: #0f766e;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+a {
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+mat-icon {
+  margin-right: 8px;
+}
+
+mat-toolbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}

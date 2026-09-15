@@ -1,0 +1,21 @@
+.login {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+
+mat-card {
+  width: min(420px, 100%);
+  border-radius: 8px;
+  padding: 28px;
+}
+
+h1 {
+  margin: 0 0 24px;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}

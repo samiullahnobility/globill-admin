@@ -1,0 +1,56 @@
+<section class="page">
+  <h1>SEO</h1>
+
+  <mat-card>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field appearance="outline">
+        <mat-label>Website ID</mat-label>
+        <input matInput type="number" formControlName="websiteId">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Site Title</mat-label>
+        <input matInput formControlName="siteTitle">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Site Description</mat-label>
+        <textarea matInput rows="3" formControlName="siteDescription"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Canonical Domain</mat-label>
+        <input matInput formControlName="canonicalDomain">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Default Meta Title</mat-label>
+        <input matInput formControlName="metaTitle">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Default Meta Description</mat-label>
+        <textarea matInput rows="3" formControlName="metaDescription"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Canonical URL</mat-label>
+        <input matInput formControlName="canonicalUrl">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Robots Directive</mat-label>
+        <input matInput formControlName="robotsDirective">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Social Image URL</mat-label>
+        <input matInput formControlName="socialImage">
+      </mat-form-field>
+
+      <button mat-flat-button type="submit">
+        Save SEO
+      </button>
+    </form>
+  </mat-card>
+</section>
