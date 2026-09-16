@@ -1,25 +1,38 @@
 <section class="page">
-  <h1>Doctors</h1>
+  <div class="page-header">
+    <div><span class="eyebrow">Clinical Profiles</span><h1>Doctors</h1></div>
+    <mat-form-field appearance="outline">
+      <mat-label>Website</mat-label>
+      <mat-select [(value)]="selectedWebsiteId" (selectionChange)="loadDoctors()">
+        <mat-option *ngFor="let website of websites" [value]="website.id">{{ website.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="editor surface">
+    <h2>{{ editingId ? 'Edit Doctor' : 'Create Doctor' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field appearance="outline"><mat-label>First Name</mat-label><input matInput formControlName="firstName"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Last Name</mat-label><input matInput formControlName="lastName"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Credentials</mat-label><input matInput formControlName="credentials"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Specialty</mat-label><input matInput formControlName="specialty"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Order</mat-label><input matInput type="number" formControlName="displayOrder"></mat-form-field>
+      <label class="check-row"><input type="checkbox" formControlName="isActive"> Active</label>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Biography</mat-label><textarea matInput rows="3" formControlName="biography"></textarea></mat-form-field>
+      <div class="form-actions">
+        <button mat-flat-button type="submit">{{ editingId ? 'Save Changes' : 'Create Doctor' }}</button>
+        <button mat-button type="button" *ngIf="editingId" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
 
   <div class="surface">
     <table mat-table [dataSource]="doctors">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let doctor">
-          {{ doctor.firstName }} {{ doctor.lastName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="credentials">
-        <th mat-header-cell *matHeaderCellDef>Credentials</th>
-        <td mat-cell *matCellDef="let doctor">{{ doctor.credentials }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="specialty">
-        <th mat-header-cell *matHeaderCellDef>Specialty</th>
-        <td mat-cell *matCellDef="let doctor">{{ doctor.specialty }}</td>
-      </ng-container>
-
+      <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Name</th><td mat-cell *matCellDef="let doctor">{{ doctor.firstName }} {{ doctor.lastName }}</td></ng-container>
+      <ng-container matColumnDef="credentials"><th mat-header-cell *matHeaderCellDef>Credentials</th><td mat-cell *matCellDef="let doctor">{{ doctor.credentials }}</td></ng-container>
+      <ng-container matColumnDef="specialty"><th mat-header-cell *matHeaderCellDef>Specialty</th><td mat-cell *matCellDef="let doctor">{{ doctor.specialty }}</td></ng-container>
+      <ng-container matColumnDef="isActive"><th mat-header-cell *matHeaderCellDef>Active</th><td mat-cell *matCellDef="let doctor"><span class="status" [class.published]="doctor.isActive">{{ doctor.isActive ? 'Active' : 'Inactive' }}</span></td></ng-container>
+      <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef></th><td mat-cell *matCellDef="let doctor"><button mat-icon-button type="button" (click)="edit(doctor)"><mat-icon>edit</mat-icon></button><button mat-icon-button type="button" (click)="delete(doctor)"><mat-icon>delete</mat-icon></button></td></ng-container>
       <tr mat-header-row *matHeaderRowDef="columns"></tr>
       <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>

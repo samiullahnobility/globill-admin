@@ -2,16 +2,42 @@ h1 {
   margin: 0 0 20px;
 }
 
+.lead-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+}
+
 table {
   width: 100%;
 }
 
 .muted {
-  color: #64748b;
+  color: var(--gm-muted);
   font-size: 13px;
 }
 
-.status {
-  color: #0f766e;
-  font-weight: 600;
+.lead-detail {
+  padding: 20px;
+}
+
+.lead-detail h2 {
+  margin: 4px 0 18px;
+}
+
+dt {
+  color: var(--gm-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+dd {
+  margin: 4px 0 14px;
+}
+
+@media (max-width: 1100px) {
+  .lead-layout {
+    grid-template-columns: 1fr;
+  }
 }

@@ -10,38 +10,34 @@ import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
 
 interface Provider { id: number; name: string; }
-interface Location { id: number; name: string; addressLine1: string; addressLine2?: string; city: string; state: string; zipCode: string; phone?: string; email?: string; businessHours?: string; isActive: boolean; }
+interface Website { id: number; name: string; providerId: number; }
+interface MediaItem { id: number; providerId: number; websiteId?: number; fileName: string; url: string; fileType: string; fileSize: number; altText?: string; }
 
 @Component({
-  selector: 'app-locations',
+  selector: 'app-media',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
-  templateUrl: './locations.component.html',
-  styleUrl: './locations.component.scss'
+  templateUrl: './media.component.html',
+  styleUrl: './media.component.scss'
 })
-export class LocationsComponent implements OnInit {
+export class MediaComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
-  columns = ['name', 'address', 'phone', 'isActive', 'actions'];
+  columns = ['fileName', 'url', 'fileType', 'fileSize', 'actions'];
   providers: Provider[] = [];
-  locations: Location[] = [];
+  websites: Website[] = [];
+  media: MediaItem[] = [];
   selectedProviderId = 0;
   editingId?: number;
 
   form = this.fb.group({
     providerId: [0, Validators.required],
-    name: ['', Validators.required],
-    addressLine1: ['', Validators.required],
-    addressLine2: [''],
-    city: ['', Validators.required],
-    state: ['', Validators.required],
-    zipCode: ['', Validators.required],
-    phone: [''],
-    email: [''],
-    businessHours: [''],
-    latitude: [null as number | null],
-    longitude: [null as number | null],
-    isActive: [true]
+    websiteId: [null as number | null],
+    fileName: ['', Validators.required],
+    url: ['', Validators.required],
+    fileType: ['image/jpeg', Validators.required],
+    fileSize: [0],
+    altText: ['']
   });
 
   constructor(private readonly api: ApiService) {}
@@ -51,37 +47,42 @@ export class LocationsComponent implements OnInit {
       this.providers = providers;
       this.selectedProviderId = providers[0]?.id ?? 0;
       this.form.patchValue({ providerId: this.selectedProviderId });
-      this.loadLocations();
+      this.loadMedia();
     });
+    this.api.get<Website[]>('/api/websites').subscribe(websites => this.websites = websites);
   }
 
-  loadLocations() {
+  providerWebsites() {
+    return this.websites.filter(website => website.providerId === this.selectedProviderId);
+  }
+
+  loadMedia() {
     if (!this.selectedProviderId) return;
     this.form.patchValue({ providerId: this.selectedProviderId });
-    this.api.get<Location[]>(`/api/providers/${this.selectedProviderId}/locations`).subscribe(locations => this.locations = locations);
+    this.api.get<MediaItem[]>(`/api/providers/${this.selectedProviderId}/media`).subscribe(media => this.media = media);
   }
 
-  edit(location: Location) {
-    this.editingId = location.id;
-    this.form.patchValue(location);
+  edit(item: MediaItem) {
+    this.editingId = item.id;
+    this.form.patchValue(item);
   }
 
   cancel() {
     this.editingId = undefined;
-    this.form.reset({ providerId: this.selectedProviderId, isActive: true });
+    this.form.reset({ providerId: this.selectedProviderId, websiteId: null, fileType: 'image/jpeg', fileSize: 0 });
   }
 
   save() {
     if (this.form.invalid) return;
     const request = this.form.getRawValue();
-    const action = this.editingId ? this.api.put<void>(`/api/locations/${this.editingId}`, request) : this.api.post<void>('/api/locations', request);
+    const action = this.editingId ? this.api.put<void>(`/api/media/${this.editingId}`, request) : this.api.post<void>('/api/media', request);
     action.subscribe(() => {
       this.cancel();
-      this.loadLocations();
+      this.loadMedia();
     });
   }
 
-  delete(location: Location) {
-    this.api.delete<void>(`/api/locations/${location.id}`).subscribe(() => this.loadLocations());
+  delete(item: MediaItem) {
+    this.api.delete<void>(`/api/media/${item.id}`).subscribe(() => this.loadMedia());
   }
 }

@@ -3,22 +3,59 @@
 }
 
 mat-sidenav {
-  width: 240px;
-  border-right: 1px solid #e5e7eb;
-  padding: 16px;
+  width: 260px;
+  background:
+    linear-gradient(180deg, rgba(25, 199, 182, 0.14), transparent 34%),
+    var(--gm-navy);
+  border-right: 0;
+  padding: 18px 14px;
 }
 
 .brand {
-  margin: 8px 8px 24px;
-  color: #0f766e;
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 8px 28px;
+  color: #fff;
+}
+
+.brand-mark {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--gm-teal);
+  color: #042f2e;
   font-weight: 700;
+  box-shadow: 0 10px 28px rgba(25, 199, 182, 0.25);
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand small {
+  margin-top: 2px;
+  color: #9db1bf;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 a {
   width: 100%;
+  height: 42px;
   justify-content: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  color: #c8d5df;
+  border-radius: 8px;
+}
+
+a.active-link {
+  background: rgba(25, 199, 182, 0.16);
+  color: #fff;
+  box-shadow: inset 3px 0 0 var(--gm-teal);
 }
 
 mat-icon {
@@ -26,6 +63,16 @@ mat-icon {
 }
 
 mat-toolbar {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.86);
+  border-bottom: 1px solid var(--gm-line);
+  color: var(--gm-ink);
+  font-weight: 600;
+  backdrop-filter: blur(14px);
+}
+
+.toolbar-spacer {
+  flex: 1;
 }

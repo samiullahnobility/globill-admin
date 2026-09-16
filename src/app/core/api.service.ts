@@ -17,4 +17,8 @@ export class ApiService {
   put<T>(url: string, body: unknown) {
     return this.http.put<T>(`${environment.apiUrl}${url}`, body);
   }
+
+  delete<T>(url: string) {
+    return this.http.delete<T>(`${environment.apiUrl}${url}`);
+  }
 }

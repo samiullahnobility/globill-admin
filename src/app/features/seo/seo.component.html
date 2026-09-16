@@ -4,8 +4,10 @@
   <mat-card>
     <form [formGroup]="form" (ngSubmit)="save()">
       <mat-form-field appearance="outline">
-        <mat-label>Website ID</mat-label>
-        <input matInput type="number" formControlName="websiteId">
+        <mat-label>Website</mat-label>
+        <mat-select formControlName="websiteId" (selectionChange)="loadSeo()">
+          <mat-option *ngFor="let website of websites" [value]="website.id">{{ website.name }}</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline">

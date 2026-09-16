@@ -14,11 +14,12 @@ table {
   width: 100%;
 }
 
-.status {
-  color: #92400e;
-  font-weight: 600;
-}
-
-.status.published {
-  color: #047857;
+.swatch {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  border: 1px solid var(--gm-line);
+  border-radius: 999px;
+  vertical-align: middle;
 }

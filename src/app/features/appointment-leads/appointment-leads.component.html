@@ -1,6 +1,7 @@
 <section class="page">
   <h1>Appointment Leads</h1>
 
+  <div class="lead-layout">
   <div class="surface">
     <table mat-table [dataSource]="leads">
       <ng-container matColumnDef="name">
@@ -47,9 +48,9 @@
           <button
             mat-icon-button
             type="button"
-            aria-label="Mark contacted"
-            (click)="markContacted(lead)">
-            <mat-icon>done</mat-icon>
+            aria-label="View lead"
+            (click)="selectLead(lead)">
+            <mat-icon>visibility</mat-icon>
           </button>
         </td>
       </ng-container>
@@ -57,5 +58,29 @@
       <tr mat-header-row *matHeaderRowDef="columns"></tr>
       <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>
+  </div>
+
+  <aside class="surface lead-detail" *ngIf="selectedLead">
+    <span class="eyebrow">Lead Detail</span>
+    <h2>{{ selectedLead.firstName }} {{ selectedLead.lastName }}</h2>
+
+    <dl>
+      <dt>Email</dt>
+      <dd>{{ selectedLead.email }}</dd>
+      <dt>Phone</dt>
+      <dd>{{ selectedLead.phone }}</dd>
+      <dt>Requested</dt>
+      <dd>{{ selectedLead.preferredDate || 'Any date' }} {{ selectedLead.preferredTime || '' }}</dd>
+      <dt>Message</dt>
+      <dd>{{ selectedLead.message || 'No message provided' }}</dd>
+    </dl>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [ngModel]="selectedLead.status" (ngModelChange)="updateStatus(selectedLead, $event)">
+        <mat-option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </aside>
   </div>
 </section>

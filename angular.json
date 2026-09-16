@@ -11,7 +11,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "assets": ["src/favicon.ico"],
+            "assets": ["src/favicon.ico", "src/assets"],
             "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.scss"]
           }
@@ -24,5 +24,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

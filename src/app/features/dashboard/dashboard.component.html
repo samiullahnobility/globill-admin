@@ -1,28 +1,38 @@
 <section class="page">
-  <h1>Dashboard</h1>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Operations</span>
+      <h1>Dashboard</h1>
+    </div>
+  </header>
 
   <div class="metrics">
     <mat-card>
+      <mat-icon>local_hospital</mat-icon>
       <span>Providers</span>
       <strong>{{ dashboard?.totalProviders ?? 0 }}</strong>
     </mat-card>
 
     <mat-card>
+      <mat-icon>language</mat-icon>
       <span>Websites</span>
       <strong>{{ dashboard?.totalWebsites ?? 0 }}</strong>
     </mat-card>
 
     <mat-card>
+      <mat-icon>published_with_changes</mat-icon>
       <span>Published</span>
       <strong>{{ dashboard?.publishedWebsites ?? 0 }}</strong>
     </mat-card>
 
     <mat-card>
+      <mat-icon>mark_email_unread</mat-icon>
       <span>New Leads</span>
       <strong>{{ dashboard?.newAppointmentRequests ?? 0 }}</strong>
     </mat-card>
 
     <mat-card>
+      <mat-icon>pending_actions</mat-icon>
       <span>Open Leads</span>
       <strong>{{ dashboard?.openAppointmentRequests ?? 0 }}</strong>
     </mat-card>

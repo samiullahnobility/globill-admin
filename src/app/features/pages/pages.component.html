@@ -1,28 +1,54 @@
 <section class="page">
-  <h1>Pages</h1>
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Structured Content</span>
+      <h1>Pages</h1>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Website</mat-label>
+      <mat-select [(value)]="selectedWebsiteId" (selectionChange)="loadPages()">
+        <mat-option *ngFor="let website of websites" [value]="website.id">{{ website.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="editor surface">
+    <h2>{{ editingId ? 'Edit Page' : 'Create Page' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field appearance="outline"><mat-label>Title</mat-label><input matInput formControlName="title"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Slug</mat-label><input matInput formControlName="slug"></mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Draft">Draft</mat-option>
+          <mat-option value="Published">Published</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Order</mat-label><input matInput type="number" formControlName="displayOrder"></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Meta Title</mat-label><input matInput formControlName="metaTitle"></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Canonical URL</mat-label><input matInput formControlName="canonicalUrl"></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Meta Description</mat-label><textarea matInput rows="3" formControlName="metaDescription"></textarea></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Content</mat-label><textarea matInput rows="3" formControlName="content"></textarea></mat-form-field>
+      <div class="form-actions">
+        <button mat-flat-button type="submit">{{ editingId ? 'Save Changes' : 'Create Page' }}</button>
+        <button mat-button type="button" *ngIf="editingId" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
 
   <div class="surface">
     <table mat-table [dataSource]="pages">
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let page">{{ page.title }}</td>
+      <ng-container matColumnDef="title"><th mat-header-cell *matHeaderCellDef>Title</th><td mat-cell *matCellDef="let page">{{ page.title }}</td></ng-container>
+      <ng-container matColumnDef="slug"><th mat-header-cell *matHeaderCellDef>Slug</th><td mat-cell *matCellDef="let page">{{ page.slug }}</td></ng-container>
+      <ng-container matColumnDef="status"><th mat-header-cell *matHeaderCellDef>Status</th><td mat-cell *matCellDef="let page"><span class="status" [class.published]="page.status === 'Published'">{{ page.status }}</span></td></ng-container>
+      <ng-container matColumnDef="displayOrder"><th mat-header-cell *matHeaderCellDef>Order</th><td mat-cell *matCellDef="let page">{{ page.displayOrder }}</td></ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let page">
+          <button mat-icon-button type="button" aria-label="Edit page" (click)="edit(page)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button type="button" aria-label="Delete page" (click)="delete(page)"><mat-icon>delete</mat-icon></button>
+        </td>
       </ng-container>
-
-      <ng-container matColumnDef="slug">
-        <th mat-header-cell *matHeaderCellDef>Slug</th>
-        <td mat-cell *matCellDef="let page">{{ page.slug }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let page">{{ page.status }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="displayOrder">
-        <th mat-header-cell *matHeaderCellDef>Order</th>
-        <td mat-cell *matCellDef="let page">{{ page.displayOrder }}</td>
-      </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="columns"></tr>
       <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>

@@ -1,25 +1,38 @@
 <section class="page">
-  <h1>Locations</h1>
+  <div class="page-header">
+    <div><span class="eyebrow">Provider Presence</span><h1>Locations</h1></div>
+    <mat-form-field appearance="outline">
+      <mat-label>Provider</mat-label>
+      <mat-select [(value)]="selectedProviderId" (selectionChange)="loadLocations()">
+        <mat-option *ngFor="let provider of providers" [value]="provider.id">{{ provider.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="editor surface">
+    <h2>{{ editingId ? 'Edit Location' : 'Create Location' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field appearance="outline"><mat-label>Name</mat-label><input matInput formControlName="name"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Address Line 1</mat-label><input matInput formControlName="addressLine1"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Address Line 2</mat-label><input matInput formControlName="addressLine2"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>City</mat-label><input matInput formControlName="city"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>State</mat-label><input matInput formControlName="state"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>ZIP</mat-label><input matInput formControlName="zipCode"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Phone</mat-label><input matInput formControlName="phone"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email"></mat-form-field>
+      <mat-form-field appearance="outline" class="wide"><mat-label>Business Hours</mat-label><input matInput formControlName="businessHours"></mat-form-field>
+      <label class="check-row"><input type="checkbox" formControlName="isActive"> Active</label>
+      <div class="form-actions"><button mat-flat-button type="submit">{{ editingId ? 'Save Changes' : 'Create Location' }}</button><button mat-button type="button" *ngIf="editingId" (click)="cancel()">Cancel</button></div>
+    </form>
+  </div>
 
   <div class="surface">
     <table mat-table [dataSource]="locations">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let location">{{ location.name }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="address">
-        <th mat-header-cell *matHeaderCellDef>Address</th>
-        <td mat-cell *matCellDef="let location">
-          {{ location.addressLine1 }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="phone">
-        <th mat-header-cell *matHeaderCellDef>Phone</th>
-        <td mat-cell *matCellDef="let location">{{ location.phone }}</td>
-      </ng-container>
-
+      <ng-container matColumnDef="name"><th mat-header-cell *matHeaderCellDef>Name</th><td mat-cell *matCellDef="let location">{{ location.name }}</td></ng-container>
+      <ng-container matColumnDef="address"><th mat-header-cell *matHeaderCellDef>Address</th><td mat-cell *matCellDef="let location">{{ location.addressLine1 }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}</td></ng-container>
+      <ng-container matColumnDef="phone"><th mat-header-cell *matHeaderCellDef>Phone</th><td mat-cell *matCellDef="let location">{{ location.phone }}</td></ng-container>
+      <ng-container matColumnDef="isActive"><th mat-header-cell *matHeaderCellDef>Active</th><td mat-cell *matCellDef="let location"><span class="status" [class.published]="location.isActive">{{ location.isActive ? 'Active' : 'Inactive' }}</span></td></ng-container>
+      <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef></th><td mat-cell *matCellDef="let location"><button mat-icon-button type="button" (click)="edit(location)"><mat-icon>edit</mat-icon></button><button mat-icon-button type="button" (click)="delete(location)"><mat-icon>delete</mat-icon></button></td></ng-container>
       <tr mat-header-row *matHeaderRowDef="columns"></tr>
       <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>
