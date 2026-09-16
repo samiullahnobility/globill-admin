@@ -6,7 +6,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Website {
   id: number;
@@ -16,7 +18,7 @@ interface Website {
 @Component({
   selector: 'app-seo',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSnackBarModule],
   templateUrl: './seo.component.html',
   styleUrl: './seo.component.scss'
 })
@@ -26,7 +28,8 @@ export class SeoComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly api: ApiService) {
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {
     this.form = this.fb.group({
       websiteId: [1],
       siteTitle: [''],
@@ -65,6 +68,13 @@ export class SeoComponent implements OnInit {
   }
 
   save() {
-    this.api.post('/api/seo', this.form.getRawValue()).subscribe();
+    if (this.form.invalid) {
+      this.feedback.invalid(this.form);
+      return;
+    }
+
+    this.api.post('/api/seo', this.form.getRawValue()).subscribe(() => {
+      this.feedback.success('SEO settings saved.');
+    });
   }
 }

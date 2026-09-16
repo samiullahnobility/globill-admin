@@ -6,8 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Website { id: number; name: string; }
 interface Page { id: number; title: string; slug: string; content?: string; metaTitle?: string; metaDescription?: string; canonicalUrl?: string; status: string; displayOrder: number; }
@@ -15,7 +17,7 @@ interface Page { id: number; title: string; slug: string; content?: string; meta
 @Component({
   selector: 'app-pages',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './pages.component.html',
   styleUrl: './pages.component.scss'
 })
@@ -40,7 +42,9 @@ export class PagesComponent implements OnInit {
     displayOrder: [0]
   });
 
-  constructor(private readonly api: ApiService) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.api.get<Website[]>('/api/websites').subscribe(websites => {
@@ -68,16 +72,24 @@ export class PagesComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.feedback.invalid(this.form);
+      return;
+    }
     const request = this.form.getRawValue();
     const action = this.editingId ? this.api.put<void>(`/api/pages/${this.editingId}`, request) : this.api.post<void>('/api/pages', request);
     action.subscribe(() => {
+      const message = this.editingId ? 'Page updated.' : 'Page created.';
       this.cancel();
       this.loadPages();
+      this.feedback.success(message);
     });
   }
 
   delete(page: Page) {
-    this.api.delete<void>(`/api/pages/${page.id}`).subscribe(() => this.loadPages());
+    this.api.delete<void>(`/api/pages/${page.id}`).subscribe(() => {
+      this.loadPages();
+      this.feedback.success('Page deleted.');
+    });
   }
 }

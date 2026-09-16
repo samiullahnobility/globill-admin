@@ -6,8 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Provider {
   id: number;
@@ -30,7 +32,7 @@ interface Website {
 @Component({
   selector: 'app-websites',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './websites.component.html',
   styleUrl: './websites.component.scss'
 })
@@ -52,7 +54,8 @@ export class WebsitesComponent implements OnInit {
   });
 
   constructor(
-    private readonly api: ApiService) {}
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.loadProviders();
@@ -89,6 +92,7 @@ export class WebsitesComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
+      this.feedback.invalid(this.form);
       return;
     }
 
@@ -98,17 +102,25 @@ export class WebsitesComponent implements OnInit {
       : this.api.post<void>('/api/websites', request);
 
     action.subscribe(() => {
+      const message = this.editingId ? 'Website updated.' : 'Website created.';
       this.cancel();
       this.loadWebsites();
+      this.feedback.success(message);
     });
   }
 
   publish(website: Website) {
-    this.api.post<void>(`/api/websites/${website.id}/publish`, {}).subscribe(() => this.loadWebsites());
+    this.api.post<void>(`/api/websites/${website.id}/publish`, {}).subscribe(() => {
+      this.loadWebsites();
+      this.feedback.success('Website published.');
+    });
   }
 
   unpublish(website: Website) {
-    this.api.post<void>(`/api/websites/${website.id}/unpublish`, {}).subscribe(() => this.loadWebsites());
+    this.api.post<void>(`/api/websites/${website.id}/unpublish`, {}).subscribe(() => {
+      this.loadWebsites();
+      this.feedback.success('Website unpublished.');
+    });
   }
 
   private loadProviders() {

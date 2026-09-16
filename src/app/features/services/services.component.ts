@@ -6,8 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Website { id: number; name: string; }
 interface Service { id: number; name: string; slug: string; shortDescription?: string; description?: string; metaTitle?: string; metaDescription?: string; displayOrder: number; isActive: boolean; }
@@ -15,7 +17,7 @@ interface Service { id: number; name: string; slug: string; shortDescription?: s
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss'
 })
@@ -41,7 +43,9 @@ export class ServicesComponent implements OnInit {
     isActive: [true]
   });
 
-  constructor(private readonly api: ApiService) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.api.get<Website[]>('/api/websites').subscribe(websites => {
@@ -69,16 +73,24 @@ export class ServicesComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.feedback.invalid(this.form);
+      return;
+    }
     const request = this.form.getRawValue();
     const action = this.editingId ? this.api.put<void>(`/api/services/${this.editingId}`, request) : this.api.post<void>('/api/services', request);
     action.subscribe(() => {
+      const message = this.editingId ? 'Service updated.' : 'Service created.';
       this.cancel();
       this.loadServices();
+      this.feedback.success(message);
     });
   }
 
   delete(service: Service) {
-    this.api.delete<void>(`/api/services/${service.id}`).subscribe(() => this.loadServices());
+    this.api.delete<void>(`/api/services/${service.id}`).subscribe(() => {
+      this.loadServices();
+      this.feedback.success('Service deleted.');
+    });
   }
 }

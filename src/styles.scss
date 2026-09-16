@@ -205,6 +205,62 @@ table.mat-mdc-table {
   width: 100%;
 }
 
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-invalid .mdc-notched-outline__trailing {
+  border-color: #d92d20;
+}
+
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-floating-label,
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-form-field-error {
+  color: #b42318;
+}
+
+.mat-mdc-form-field.mat-form-field-invalid:has(.ng-untouched:not(.ng-dirty)) .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-form-field-invalid:has(.ng-untouched:not(.ng-dirty)) .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-form-field-invalid:has(.ng-untouched:not(.ng-dirty)) .mdc-notched-outline__trailing {
+  border-color: var(--gm-line);
+}
+
+.mat-mdc-form-field.mat-form-field-invalid:has(.ng-untouched:not(.ng-dirty)) .mat-mdc-floating-label {
+  color: var(--gm-muted);
+}
+
+.mat-mdc-snack-bar-container.app-toast {
+  --mdc-snackbar-container-shape: 8px;
+  --mat-snack-bar-button-color: #ffffff;
+  --mat-snack-bar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.app-toast-success {
+  --mdc-snackbar-container-color: #047857;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.app-toast-error {
+  --mdc-snackbar-container-color: #b42318;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.app-toast-success .mdc-snackbar__surface {
+  background-color: #047857;
+  color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.app-toast-error .mdc-snackbar__surface {
+  background-color: #b42318;
+  color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.app-toast-success .mat-mdc-snack-bar-label,
+.mat-mdc-snack-bar-container.app-toast-error .mat-mdc-snack-bar-label,
+.mat-mdc-snack-bar-container.app-toast-success .mat-mdc-button,
+.mat-mdc-snack-bar-container.app-toast-error .mat-mdc-button {
+  color: #ffffff;
+}
+
 .status {
   display: inline-flex;
   align-items: center;

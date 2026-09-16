@@ -6,8 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Provider { id: number; name: string; }
 interface Website { id: number; name: string; providerId: number; }
@@ -16,7 +18,7 @@ interface MediaItem { id: number; providerId: number; websiteId?: number; fileNa
 @Component({
   selector: 'app-media',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './media.component.html',
   styleUrl: './media.component.scss'
 })
@@ -40,7 +42,9 @@ export class MediaComponent implements OnInit {
     altText: ['']
   });
 
-  constructor(private readonly api: ApiService) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.api.get<Provider[]>('/api/providers').subscribe(providers => {
@@ -73,16 +77,24 @@ export class MediaComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.feedback.invalid(this.form);
+      return;
+    }
     const request = this.form.getRawValue();
     const action = this.editingId ? this.api.put<void>(`/api/media/${this.editingId}`, request) : this.api.post<void>('/api/media', request);
     action.subscribe(() => {
+      const message = this.editingId ? 'Media updated.' : 'Media added.';
       this.cancel();
       this.loadMedia();
+      this.feedback.success(message);
     });
   }
 
   delete(item: MediaItem) {
-    this.api.delete<void>(`/api/media/${item.id}`).subscribe(() => this.loadMedia());
+    this.api.delete<void>(`/api/media/${item.id}`).subscribe(() => {
+      this.loadMedia();
+      this.feedback.success('Media deleted.');
+    });
   }
 }

@@ -6,8 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Provider { id: number; name: string; }
 interface Location { id: number; name: string; addressLine1: string; addressLine2?: string; city: string; state: string; zipCode: string; phone?: string; email?: string; businessHours?: string; isActive: boolean; }
@@ -15,7 +17,7 @@ interface Location { id: number; name: string; addressLine1: string; addressLine
 @Component({
   selector: 'app-locations',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatSnackBarModule, MatTableModule],
   templateUrl: './locations.component.html',
   styleUrl: './locations.component.scss'
 })
@@ -44,7 +46,9 @@ export class LocationsComponent implements OnInit {
     isActive: [true]
   });
 
-  constructor(private readonly api: ApiService) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.api.get<Provider[]>('/api/providers').subscribe(providers => {
@@ -72,16 +76,24 @@ export class LocationsComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.feedback.invalid(this.form);
+      return;
+    }
     const request = this.form.getRawValue();
     const action = this.editingId ? this.api.put<void>(`/api/locations/${this.editingId}`, request) : this.api.post<void>('/api/locations', request);
     action.subscribe(() => {
+      const message = this.editingId ? 'Location updated.' : 'Location created.';
       this.cancel();
       this.loadLocations();
+      this.feedback.success(message);
     });
   }
 
   delete(location: Location) {
-    this.api.delete<void>(`/api/locations/${location.id}`).subscribe(() => this.loadLocations());
+    this.api.delete<void>(`/api/locations/${location.id}`).subscribe(() => {
+      this.loadLocations();
+      this.feedback.success('Location deleted.');
+    });
   }
 }

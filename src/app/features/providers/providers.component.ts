@@ -5,8 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../core/api.service';
+import { FormFeedbackService } from '../../core/form-feedback.service';
 
 interface Provider {
   id: number;
@@ -21,7 +23,7 @@ interface Provider {
 @Component({
   selector: 'app-providers',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSnackBarModule, MatTableModule],
   templateUrl: './providers.component.html',
   styleUrl: './providers.component.scss'
 })
@@ -41,7 +43,8 @@ export class ProvidersComponent implements OnInit {
   });
 
   constructor(
-    private readonly api: ApiService) {}
+    private readonly api: ApiService,
+    private readonly feedback: FormFeedbackService) {}
 
   ngOnInit() {
     this.loadProviders();
@@ -59,6 +62,7 @@ export class ProvidersComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
+      this.feedback.invalid(this.form);
       return;
     }
 
@@ -68,13 +72,18 @@ export class ProvidersComponent implements OnInit {
       : this.api.post<void>('/api/providers', request);
 
     action.subscribe(() => {
+      const message = this.editingId ? 'Provider updated.' : 'Provider created.';
       this.cancel();
       this.loadProviders();
+      this.feedback.success(message);
     });
   }
 
   deactivate(provider: Provider) {
-    this.api.delete<void>(`/api/providers/${provider.id}`).subscribe(() => this.loadProviders());
+    this.api.delete<void>(`/api/providers/${provider.id}`).subscribe(() => {
+      this.loadProviders();
+      this.feedback.success('Provider deactivated.');
+    });
   }
 
   statusLabel(status: number) {
