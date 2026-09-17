@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:57172'
+  apiUrl: 'https://globill-api-production.up.railway.app'
 };
